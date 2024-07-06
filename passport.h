@@ -2,6 +2,7 @@
 #include <time.h>
 
 #define PASSPORT_H
+#define PASSPORT_NO_START 100000000000
 
 #define RED   "\x1B[31m"
 #define GRN   "\x1B[32m"
@@ -12,11 +13,17 @@
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
+struct Date {
+    int day;
+    int month;
+    int year;
+};
+
 struct PassportSRT {
     int id;
     char name[50];
     char email[50];
-    char passport_no[50];
+    int passport_no;
     time_t expiry_date;
 };
 

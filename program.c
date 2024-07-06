@@ -24,34 +24,53 @@ void passportList() {
     FILE* fs = fopen("Data.dat", "rb");
 
     if (fs == NULL) {
-        printf(RED "Passport not found! \n" RESET);
+        printf(RED "************************** PASSPORT NOT FOUND! ************************* \n" RESET);
         return;
     }
 
-    while (fread(&passport, sizeof(struct PassportSRT), 1, fs)) {
+    while (fread(&passport, sizeof(passport), 1, fs)) {
         char expiry_date_str[26];
         ctime_r(&passport.expiry_date, expiry_date_str);
-        printf("%-3d %-20s %-20s %-12s %s", passport.id, passport.name, passport.email, passport.passport_no, expiry_date_str);
+        printf("%-3d %-20s %-20s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, expiry_date_str);
     }
     fclose(fs);    
 }
 
 void createPassport() {
-    struct PassportSRT passport = {
-        2,
-        "Rakib Hossain",
-        "rakib@gmail.com",
-        "fdfdf",
-        time(NULL)
-    };
+    struct PassportSRT passport;
+    FILE* fs = fopen("Data.dat", "rb");
 
-    FILE* fs = fopen("Data.dat", "ab");
+    if (fs == NULL) {
+        passport.id = 1;
+    } else {
+        fseek(fs, -sizeof(passport), SEEK_END);
+        if (fread(&passport, sizeof(passport), 1, fs) == 1) {
+            passport.id += 1;
+        } else {
+            passport.id = 1;
+        }
+        fclose(fs);
+    }
 
-    if (fs != NULL) {
+    fs = fopen("Data.dat", "ab");
+
+    if (fs == NULL) {
+        printf(RED "Error opening file.\n" RESET);
+    } else {
+        struct Date dob;
+        printf("Enter Your Name: ");
+        gets(passport.name, sizeof(passport.passport_no), stdin);
+
+        printf("Enter Your Email: ");
+        gets(passport.email, sizeof(passport.passport_no), stdin);
+
+        printf("Enter Your Date Of Birth (DD-MM-YYYY): ");
+        scanf("%d-%d-%d", &dob.day, &dob.month, &dob.year);
+
+        passport.passport_no = PASSPORT_NO_START + passport.id;
+
         fwrite(&passport, sizeof(passport), 1, fs);
         fclose(fs);
-    } else {
-        printf(RED "Error opening file.\n" RESET);
     }
 
     printf("Create passport.\n");
