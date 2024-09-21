@@ -34,6 +34,9 @@ void createPassport();
 
 void navigator(int choice) {
     switch (choice) {
+        case 0:
+            mainMenu();
+            break;
         case 1:
             passportList();
             break;

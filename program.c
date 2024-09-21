@@ -33,7 +33,8 @@ void passportList() {
         ctime_r(&passport.expiry_date, expiry_date_str);
         printf("%-3d %-20s %-20s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, expiry_date_str);
     }
-    fclose(fs);    
+    fclose(fs);
+    footerMenu(1);
 }
 
 void createPassport() {
@@ -73,7 +74,9 @@ void createPassport() {
         fclose(fs);
     }
 
-    printf("Create passport.\n");
+    system("clear");
+    printf(GRN "Successfully created passport.\n" RESET);
+    navigator(1);
 }
 
 
@@ -90,5 +93,21 @@ void mainMenu() {
     } else {
         printf(RED "Your entered option was wrong. Please read carefully and try again.\n\n" RESET);
         mainMenu();
+    }
+}
+
+void footerMenu(int call_from) {
+    printf("\n\n------------------------------------------------------------------------------------ \n");
+    printf(WHT "0. Backt to main menu.      ");
+    printf("1. List of all passports.      ");
+    printf("2. Create a new passport.      \n" RESET);
+
+    int choice = getChoiceInput();
+
+    if (choice >= 0 && choice <= 2) {
+        navigator(choice);
+    } else {
+        printf(RED "Your entered option was wrong. Please read carefully and try again.\n\n" RESET);
+        navigator(call_from);
     }
 }
