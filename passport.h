@@ -31,6 +31,7 @@ int getChoiceInput();
 void mainMenu();
 void passportList();
 void createPassport();
+void deletePassport();
 
 void navigator(int choice) {
     switch (choice) {
@@ -42,6 +43,9 @@ void navigator(int choice) {
             break;
         case 2:
             createPassport();
+            break;
+        case 3:
+            deletePassport();
             break;
     }
 }

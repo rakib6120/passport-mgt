@@ -24,7 +24,7 @@ void passportList() {
     FILE* fs = fopen("Data.dat", "rb");
 
     if (fs == NULL) {
-        printf(RED "************************** PASSPORT NOT FOUND! ************************* \n" RESET);
+        printf(RED "************************** PASSPORT NOT FOUND! ************************** \n" RESET);
         return;
     }
 
@@ -76,16 +76,71 @@ void createPassport() {
     navigator(1);
 }
 
+void deletePassport() {
+    int passport_id;
+    bool found = false;
+    struct PassportSRT passport;
+
+    FILE *fs = fopen("Data.dat", "rb");
+    if (fs == NULL) {
+        printf(RED "************************** PASSPORT DATA NOT FOUND! ************************** \n" RESET);
+        footerMenu(1);
+        return;
+    }
+
+    FILE *temp = fopen("Temp.dat", "wb");
+    if (temp == NULL) {
+        printf(RED "Something went wrong.\n" RESET);
+        fclose(fs);
+        footerMenu(1);
+        return;
+    }
+
+    // Get the passport ID to delete
+    printf("Enter Passport ID to delete: ");
+    scanf("%d", &passport_id);
+    getchar();  // Consume newline after integer input
+
+    // Read each record from the original file
+    while (fread(&passport, sizeof(passport), 1, fs)) {
+        if (passport.id == passport_id) {
+            // Passport found, set the flag and skip writing it to the temp file
+            found = true;
+            printf(GRN "Passport with ID %d deleted successfully.\n" RESET, passport_id);
+        } else {
+            // Copy non-matching records to the temporary file
+            fwrite(&passport, sizeof(passport), 1, temp);
+        }
+    }
+
+    // Close the file streams
+    fclose(fs);
+    fclose(temp);
+
+    // Check if the passport was found
+    if (!found) {
+        printf(RED "Passport ID %d not found.\n" RESET, passport_id);
+        remove("Temp.dat");  // Remove the temporary file since no deletion occurred
+    } else {
+        // Delete the original file and rename the temp file to the original name
+        remove("Data.dat");
+        rename("Temp.dat", "Data.dat");
+    }
+
+    footerMenu(1);  // Return to the main menu or list the passports
+}
 
 
 void mainMenu() {
     printf("1. List of all passports.\n");
-    printf("2. Create a new passport.\n\n");
+    printf("2. Create a new passport.\n");
+    printf("3. Delete a passport.\n\n");
+
     printf("**** Please choose a menu. **** \n\n");
 
     int choice = getChoiceInput();
 
-    if (choice >= 1 && choice <= 2) {
+    if (choice >= 1 && choice <= 3) {
         navigator(choice);
     } else {
         printf(RED "Your entered option was wrong. Please read carefully and try again.\n\n" RESET);
@@ -97,11 +152,12 @@ void footerMenu(int call_from) {
     printf("\n\n------------------------------------------------------------------------------------ \n");
     printf(WHT "0. Backt to main menu.      ");
     printf("1. List of all passports.      ");
-    printf("2. Create a new passport.      \n" RESET);
+    printf("2. Create a new passport.      ");
+    printf("3. Delete a passport.      \n" RESET);
 
     int choice = getChoiceInput();
 
-    if (choice >= 0 && choice <= 2) {
+    if (choice >= 0 && choice <= 3) {
         navigator(choice);
     } else {
         printf(RED "Your entered option was wrong. Please read carefully and try again.\n\n" RESET);
