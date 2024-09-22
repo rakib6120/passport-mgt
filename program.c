@@ -18,7 +18,7 @@ int getChoiceInput() {
 }
 
 void passportList() {
-    printf("%-3s %-20s %-20s %-12s %s \n\n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
+    printf("%-3s %-20s %-30s %-12s %s \n\n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
     
     struct PassportSRT passport;
     FILE* fs = fopen("Data.dat", "rb");
@@ -29,9 +29,7 @@ void passportList() {
     }
 
     while (fread(&passport, sizeof(passport), 1, fs)) {
-        char expiry_date_str[26];
-        ctime_r(&passport.expiry_date, expiry_date_str);
-        printf("%-3d %-20s %-20s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, expiry_date_str);
+        printf("%-3d %-20s %-30s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, passport.expiry_date);
     }
     fclose(fs);
     footerMenu(1);
@@ -58,15 +56,14 @@ void createPassport() {
     if (fs == NULL) {
         printf(RED "Error opening file.\n" RESET);
     } else {
-        struct Date dob;
         printf("Enter Your Name: ");
-        gets(passport.name, sizeof(passport.passport_no), stdin);
+        gets(passport.name, sizeof(passport.name), stdin);
 
         printf("Enter Your Email: ");
-        gets(passport.email, sizeof(passport.passport_no), stdin);
+        gets(passport.email, sizeof(passport.email), stdin);
 
         printf("Enter Your Date Of Birth (DD-MM-YYYY): ");
-        scanf("%d-%d-%d", &dob.day, &dob.month, &dob.year);
+        gets(passport.expiry_date, sizeof(passport.expiry_date), stdin);
 
         passport.passport_no = PASSPORT_NO_START + passport.id;
 

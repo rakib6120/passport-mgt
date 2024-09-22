@@ -24,7 +24,7 @@ struct PassportSRT {
     char name[50];
     char email[50];
     int passport_no;
-    time_t expiry_date;
+    char expiry_date[10];
 };
 
 int getChoiceInput();
