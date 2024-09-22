@@ -96,38 +96,31 @@ void deletePassport() {
         return;
     }
 
-    // Get the passport ID to delete
     printf("Enter Passport ID to delete: ");
     scanf("%d", &passport_id);
-    getchar();  // Consume newline after integer input
+    getchar();
 
-    // Read each record from the original file
     while (fread(&passport, sizeof(passport), 1, fs)) {
         if (passport.id == passport_id) {
-            // Passport found, set the flag and skip writing it to the temp file
             found = true;
             printf(GRN "Passport with ID %d deleted successfully.\n" RESET, passport_id);
         } else {
-            // Copy non-matching records to the temporary file
             fwrite(&passport, sizeof(passport), 1, temp);
         }
     }
 
-    // Close the file streams
     fclose(fs);
     fclose(temp);
 
-    // Check if the passport was found
     if (!found) {
         printf(RED "Passport ID %d not found.\n" RESET, passport_id);
-        remove("Temp.dat");  // Remove the temporary file since no deletion occurred
+        remove("Temp.dat");
     } else {
-        // Delete the original file and rename the temp file to the original name
         remove("Data.dat");
         rename("Temp.dat", "Data.dat");
     }
 
-    footerMenu(1);  // Return to the main menu or list the passports
+    footerMenu(1);
 }
 
 
