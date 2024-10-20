@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "passport.h"
 
 // Starting of the program.
@@ -58,13 +59,13 @@ void createPassport() {
         printf(RED "Error opening file.\n" RESET);
     } else {
         printf("Enter Your Name: ");
-        gets(passport.name, sizeof(passport.name), stdin);
+        fgets(passport.name, sizeof(passport.name), stdin);
 
         printf("Enter Your Email: ");
-        gets(passport.email, sizeof(passport.email), stdin);
+        fgets(passport.email, sizeof(passport.email), stdin);
 
         printf("Enter Your Date Of Birth (DD-MM-YYYY): ");
-        gets(passport.expiry_date, sizeof(passport.expiry_date), stdin);
+        fgets(passport.expiry_date, sizeof(passport.expiry_date), stdin);
 
         passport.passport_no = PASSPORT_NO_START + passport.id;
 
@@ -74,7 +75,91 @@ void createPassport() {
 
     system("clear");
     printf(GRN "Successfully created passport.\n" RESET);
-    navigator(1);
+    footerMenu(0);
+}
+
+void searchPassport() {
+    struct PassportSRT passport;
+    int searchId;
+    char searchName[50];
+    int found = 0;
+    FILE* fs = fopen("Data.dat", "rb");
+
+    if (fs == NULL) {
+        printf(RED "Error opening file!\n" RESET);
+        return;
+    }
+
+    printf("Enter the Passport ID to search or leave empty to search by name: ");
+    scanf("%d", &searchId);
+    getchar();
+    if (searchId == 0) {
+        printf("Enter the Name to search: ");
+        fgets(searchName, sizeof(searchName), stdin);
+        searchName[strcspn(searchName, "\n")] = 0;
+    }
+
+    while (fread(&passport, sizeof(passport), 1, fs)) {
+        if ((searchId != 0 && passport.id == searchId) || 
+            (searchId == 0 && strcmp(passport.name, searchName) == 0)) {
+            printf(GRN "Passport found:\n" RESET);
+            viewPassportDetails(passport);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf(RED "No passport found matching the criteria.\n" RESET);
+    }
+
+    fclose(fs);
+    footerMenu(0);
+}
+
+void viewPassportDetails(struct PassportSRT passport) {
+    printf("%-3s %-20s %-30s %-12s %s \n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
+    printf("%-3d %-20s %-30s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, passport.expiry_date);
+}
+
+void filterPassports() {
+    struct PassportSRT passport;
+    char filterName[50];
+    int filterYear, found = 0;
+    FILE* fs = fopen("Data.dat", "rb");
+
+    if (fs == NULL) {
+        printf(RED "Error opening file!\n" RESET);
+        return;
+    }
+
+    printf("Enter the name filter or leave empty: ");
+    fgets(filterName, sizeof(filterName), stdin);
+    filterName[strcspn(filterName, "\n")] = 0;
+
+    printf("Enter the year of birth filter (0 for no filter): ");
+    scanf("%d", &filterYear);
+    getchar();
+
+    while (fread(&passport, sizeof(passport), 1, fs)) {
+        int year = atoi(&passport.expiry_date[6]);
+        if ((strlen(filterName) == 0 || strstr(passport.name, filterName)) &&
+            (filterYear == 0 || year == filterYear)) {
+            if (!found) {
+                printf(GRN "Filtered Passports:\n" RESET);
+                printf("%-3s %-20s %-30s %-12s %s \n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
+            }
+            printf("%-3d %-20s %-30s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, passport.expiry_date);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf(RED "No passports found matching the filter criteria.\n" RESET);
+    }
+
+    fclose(fs);
+    footerMenu(0);
 }
 
 void deletePassport() {
@@ -124,7 +209,6 @@ void deletePassport() {
     footerMenu(1);
 }
 
-
 void mainMenu() {
     printf("1. List of all passports.\n");
     printf("2. Create a new passport.\n");
@@ -144,14 +228,16 @@ void mainMenu() {
 
 void footerMenu(int call_from) {
     printf("\n\n------------------------------------------------------------------------------------ \n");
-    printf(WHT "0. Backt to main menu.      ");
+    printf(WHT "0. Back to main menu.      ");
     printf("1. List of all passports.      ");
     printf("2. Create a new passport.      ");
-    printf("3. Delete a passport.      \n" RESET);
+    printf("3. Delete a passport.      ");
+    printf("4. Search passport.      ");
+    printf("5. Filter passports.\n" RESET);
 
     int choice = getChoiceInput();
 
-    if (choice >= 0 && choice <= 3) {
+    if (choice >= 0 && choice <= 5) {
         navigator(choice);
     } else {
         printf(RED "Your entered option was wrong. Please read carefully and try again.\n\n" RESET);

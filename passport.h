@@ -29,9 +29,13 @@ struct PassportSRT {
 
 int getChoiceInput();
 void mainMenu();
+void footerMenu(int call_from);
 void passportList();
 void createPassport();
 void deletePassport();
+void searchPassport(); // New function for searching
+void filterPassports(); // New function for filtering
+void viewPassportDetails(struct PassportSRT passport); // New function for viewing passport details
 
 void navigator(int choice) {
     switch (choice) {
@@ -46,6 +50,12 @@ void navigator(int choice) {
             break;
         case 3:
             deletePassport();
+            break;
+        case 4:
+            searchPassport();
+            break;
+        case 5:
+            filterPassports();
             break;
     }
 }
