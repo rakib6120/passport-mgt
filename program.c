@@ -25,6 +25,7 @@ void passportList() {
 
     if (fs == NULL) {
         printf(RED "************************** PASSPORT NOT FOUND! ************************** \n" RESET);
+        footerMenu(1);
         return;
     }
 
