@@ -59,13 +59,13 @@ void createPassport() {
         printf(RED "Error opening file.\n" RESET);
     } else {
         printf("Enter Your Name: ");
-        fgets(passport.name, sizeof(passport.name), stdin);
+        gets(passport.name, sizeof(passport.name), stdin);
 
         printf("Enter Your Email: ");
-        fgets(passport.email, sizeof(passport.email), stdin);
+        gets(passport.email, sizeof(passport.email), stdin);
 
         printf("Enter Your Date Of Birth (DD-MM-YYYY): ");
-        fgets(passport.expiry_date, sizeof(passport.expiry_date), stdin);
+        gets(passport.expiry_date, sizeof(passport.expiry_date), stdin);
 
         passport.passport_no = PASSPORT_NO_START + passport.id;
 
@@ -75,7 +75,7 @@ void createPassport() {
 
     system("clear");
     printf(GRN "Successfully created passport.\n" RESET);
-    footerMenu(0);
+    navigator(1);
 }
 
 void searchPassport() {
@@ -95,8 +95,7 @@ void searchPassport() {
     getchar();
     if (searchId == 0) {
         printf("Enter the Name to search: ");
-        fgets(searchName, sizeof(searchName), stdin);
-        searchName[strcspn(searchName, "\n")] = 0;
+        gets(searchName, sizeof(searchName), stdin);
     }
 
     while (fread(&passport, sizeof(passport), 1, fs)) {
@@ -114,7 +113,7 @@ void searchPassport() {
     }
 
     fclose(fs);
-    footerMenu(0);
+    navigator(1);
 }
 
 void viewPassportDetails(struct PassportSRT passport) {
@@ -134,8 +133,7 @@ void filterPassports() {
     }
 
     printf("Enter the name filter or leave empty: ");
-    fgets(filterName, sizeof(filterName), stdin);
-    filterName[strcspn(filterName, "\n")] = 0;
+    gets(filterName, sizeof(filterName), stdin);
 
     printf("Enter the year of birth filter (0 for no filter): ");
     scanf("%d", &filterYear);
