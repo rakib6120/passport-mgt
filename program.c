@@ -157,7 +157,7 @@ void filterPassports() {
     }
 
     fclose(fs);
-    footerMenu(0);
+    navigator(0);
 }
 
 void deletePassport() {
