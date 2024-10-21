@@ -116,11 +116,6 @@ void searchPassport() {
     footerMenu(1);
 }
 
-void viewPassportDetails(struct PassportSRT passport) {
-    printf("%-3s %-20s %-30s %-12s %s \n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
-    printf("%-3d %-20s %-30s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, passport.expiry_date);
-}
-
 void deletePassport() {
     int passport_id;
     bool found = false;
@@ -165,7 +160,12 @@ void deletePassport() {
         rename("Temp.dat", "Data.dat");
     }
 
-    footerMenu(1);
+    navigator(1);
+}
+
+void viewPassportDetails(struct PassportSRT passport) {
+    printf("%-3s %-20s %-30s %-12s %s \n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
+    printf("%-3d %-20s %-30s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, passport.expiry_date);
 }
 
 void mainMenu() {
