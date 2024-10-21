@@ -113,51 +113,12 @@ void searchPassport() {
     }
 
     fclose(fs);
-    navigator(1);
+    footerMenu(1);
 }
 
 void viewPassportDetails(struct PassportSRT passport) {
     printf("%-3s %-20s %-30s %-12s %s \n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
     printf("%-3d %-20s %-30s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, passport.expiry_date);
-}
-
-void filterPassports() {
-    struct PassportSRT passport;
-    char filterName[50];
-    int filterYear, found = 0;
-    FILE* fs = fopen("Data.dat", "rb");
-
-    if (fs == NULL) {
-        printf(RED "Error opening file!\n" RESET);
-        return;
-    }
-
-    printf("Enter the name filter or leave empty: ");
-    gets(filterName, sizeof(filterName), stdin);
-
-    printf("Enter the year of birth filter (0 for no filter): ");
-    scanf("%d", &filterYear);
-    getchar();
-
-    while (fread(&passport, sizeof(passport), 1, fs)) {
-        int year = atoi(&passport.expiry_date[6]);
-        if ((strlen(filterName) == 0 || strstr(passport.name, filterName)) &&
-            (filterYear == 0 || year == filterYear)) {
-            if (!found) {
-                printf(GRN "Filtered Passports:\n" RESET);
-                printf("%-3s %-20s %-30s %-12s %s \n", "Id", "Full Name", "Email Address", "Passport No", "Date Of Birth");
-            }
-            printf("%-3d %-20s %-30s %-12d %s \n", passport.id, passport.name, passport.email, passport.passport_no, passport.expiry_date);
-            found = 1;
-        }
-    }
-
-    if (!found) {
-        printf(RED "No passports found matching the filter criteria.\n" RESET);
-    }
-
-    fclose(fs);
-    navigator(0);
 }
 
 void deletePassport() {
@@ -230,8 +191,7 @@ void footerMenu(int call_from) {
     printf("1. List of all passports.      ");
     printf("2. Create a new passport.      ");
     printf("3. Delete a passport.      ");
-    printf("4. Search passport.      ");
-    printf("5. Filter passports.\n" RESET);
+    printf("4. Search passport.\n" RESET);
 
     int choice = getChoiceInput();
 
